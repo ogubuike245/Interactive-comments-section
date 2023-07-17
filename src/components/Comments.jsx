@@ -3,7 +3,7 @@ import Comment from "./Comment";
 import useNode from "../hooks/useNode";
 
 const Comments = ({
-  comments,
+  commentsData,
   handleAddReply,
   handleEditComment,
   handleDeleteComment,
@@ -11,10 +11,11 @@ const Comments = ({
   return (
     // LOOP THROUGH COMMENTS
     <div className="comments-section">
-      {comments.map((comment) => (
+      {commentsData.comments.map((comment) => (
         <Comment
           key={comment.id}
           comment={comment}
+          currentUser={commentsData.currentUser}
           handleAddReply={handleAddReply}
           handleEditComment={handleEditComment}
           handleDeleteComment={handleDeleteComment}

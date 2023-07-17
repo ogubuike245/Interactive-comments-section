@@ -1,3 +1,4 @@
+import { useState } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
@@ -11,13 +12,40 @@ function formatCommentDate(createdAt) {
 // Local imports
 import Replies from "./Replies";
 import useNode from "../hooks/useNode";
+import ReplyForm from "./ReplyForm";
 
 const Comment = ({
   comment,
+  currentUser,
   handleAddReply,
   handleEditComment,
   handleDeleteComment,
 }) => {
+  const [showReplyForm, setShowReplyForm] = useState(false);
+  const [replyInput, setReplyInput] = useState("");
+
+  const { addNode, updateNode, removeNode } = useNode();
+
+  const toggleReplyForm = () => {
+    setShowReplyForm((prev) => !prev);
+    setReplyInput(""); // Clear the input field when showing/hiding the form
+  };
+
+  const handleCommentReply = (event) => {
+    event.preventDefault();
+    addNode(comment, comment.id, replyInput);
+    toggleReplyForm();
+  };
+  const handleCommentDelete = (event) => {
+    event.preventDefault();
+    addNode(comment, comment.id, replyInput);
+    toggleReplyForm();
+  };
+  const handleCommentUpdate = (event) => {
+    event.preventDefault();
+    addNode(comment, comment.id, replyInput);
+    toggleReplyForm();
+  };
   return (
     <>
       <article className="comment">
@@ -43,14 +71,25 @@ const Comment = ({
         </div>
 
         {/* COMMENT ACTIONS  */}
-        <div className="actions">
+        <div className="actions" onClick={toggleReplyForm}>
           <i className="fa fa-reply"></i>
           <span>Reply</span>
         </div>
       </article>
 
+      {/* SHOW THE REPLY FORM */}
+      {showReplyForm && (
+        <ReplyForm
+          handleCommentReply={handleCommentReply}
+          replyInput={replyInput}
+          setReplyInput={setReplyInput}
+          comment={comment}
+          currentUser={currentUser}
+        />
+      )}
+
       {/* COMMENT REPLIES  */}
-      <Replies comment={comment} />
+      <Replies comment={comment} currentUser={currentUser} />
     </>
   );
 };

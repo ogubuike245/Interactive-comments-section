@@ -1,13 +1,13 @@
 import React from "react";
 import Comment from "./Comment";
 
-const Replies = ({ comment }) => {
+const Replies = ({ comment, currentUser }) => {
   return (
     <div className="replies">
       {comment.replies &&
         comment.replies.length > 0 &&
         comment.replies.map((reply) => (
-          <Comment key={reply.id} comment={reply} />
+          <Comment key={reply.id} comment={reply} currentUser={currentUser} />
         ))}
     </div>
   );

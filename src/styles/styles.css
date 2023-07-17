@@ -47,14 +47,17 @@ img {
 
 section {
   background-color: var(--VeryLightGray);
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+
   padding: 0.5rem;
 }
 
 main {
-  /* border: 5px solid red; */
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 2rem;
+  width: 90%;
+  margin: auto;
 }
 
 /* COMMENTS  */
@@ -63,7 +66,6 @@ main {
   gap: 1rem;
   display: flex;
   flex-direction: column;
-  /* border: 5px solid green; */
 }
 
 .comment {
@@ -72,7 +74,7 @@ main {
     "user-info user-info user-info"
     "content  content content"
     "score-area ..... actions";
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 100px 1fr 1fr;
   gap: 1rem;
   height: 100%;
   background-color: var(--White);
@@ -116,6 +118,9 @@ main {
   cursor: pointer;
   color: var(--LightGrayishBlue);
 }
+.comment-score i:hover {
+  color: var(--ModerateBlue);
+}
 .comment-score strong {
   color: var(--ModerateBlue);
 }
@@ -132,6 +137,10 @@ main {
 .actions span {
   cursor: pointer;
 }
+.actions i:hover,
+.actions span:hover {
+  color: var(--LightGray);
+}
 
 .username {
   color: var(--DarkBlue);
@@ -143,12 +152,62 @@ main {
   height: 30px;
 }
 
+/* FORM  */
+form {
+  background-color: var(--White);
+  display: grid;
+  grid-template-columns: 50px 1fr 100px;
+  grid-template-rows: 50px 50px 50px;
+  grid-template-areas:
+    "form-input form-input form-input"
+    "form-input form-input form-input"
+    "form-avatar  .....   form-button";
+  gap: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+  border-radius: 0.5rem;
+}
+
+.form-avatar {
+  grid-area: form-avatar;
+  /* border: 1px solid red; */
+}
+
+.form-input {
+  grid-area: form-input;
+  resize: none;
+  padding: 1rem;
+  border: 1px solid var(--LightGrayishBlue);
+  border-radius: 0.5rem;
+  outline: 1px solid transparent;
+}
+.form-input:focus {
+  outline: 1px solid var(--ModerateBlue);
+}
+
+.form-button {
+  grid-area: form-button;
+  border-radius: 0.5rem;
+  outline: none;
+  border: none;
+  background-color: var(--ModerateBlue);
+  color: var(--White);
+  cursor: pointer;
+}
+.form-button:hover {
+  background-color: var(--LightGrayishBlue);
+}
+
 /* MAIN FORM CONTAINER  */
 
 /* DESKTOP MEDIA QUERY  */
 @media (min-width: 768px) {
   section {
-    padding: 5rem 15rem;
+    padding: 3rem 0;
+  }
+  main {
+    width: 60%;
+    margin: auto;
   }
   /* COMMENTS  */
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Comments from "./Comments";
 import CreateCommentForm from "./CreateCommentForm";
 
@@ -8,6 +8,8 @@ import useNode from "../hooks/useNode";
 
 const MainComponent = () => {
   const [commentsData, setCommentsData] = useState(jsonData);
+
+  const [editMode, setEditMode] = useState(false);
 
   const { addNode, updateNode, removeNode } = useNode(); // Destructure functions
 
@@ -22,16 +24,20 @@ const MainComponent = () => {
   const handleDeleteComment = () => {
     const updatedComments = removeNode(comments, comment.id);
   };
+
   return (
     <section>
       <main>
         <Comments
-          comments={commentsData.comments}
+          commentsData={commentsData}
           handleAddReply={handleAddReply}
           handleEditComment={handleEditComment}
           handleDeleteComment={handleDeleteComment}
         />
-        <CreateCommentForm currentUser={commentsData.currentUser} />
+        <CreateCommentForm
+          commentsData={commentsData}
+          setCommentsData={setCommentsData}
+        />
       </main>
     </section>
   );
