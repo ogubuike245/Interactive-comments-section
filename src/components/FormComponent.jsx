@@ -1,11 +1,13 @@
 import React from "react";
 
 const FormComponent = ({
-  onSubmit,
-  inputValue,
-  setInputValue,
+  // DATA
   currentUser,
+  inputValue,
   placeholder,
+  // ACTIONS
+  onSubmit,
+  setInputValue,
 }) => {
   return (
     <form onSubmit={onSubmit} className="reply-form">
@@ -14,6 +16,7 @@ const FormComponent = ({
       </div>
 
       <textarea
+        autoFocus
         name="form-input"
         className="form-input"
         id="form-input"

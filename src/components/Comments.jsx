@@ -2,13 +2,16 @@ import Comment from "./Comment";
 
 // Comments.jsx
 const Comments = ({
+  // DATA
   user,
   commentsArray,
+
+  // ACTIONS
   setComments,
   handleAddReply,
   handleEditComment,
   handleDeleteComment,
-  updateCommentScore,
+  handleVoting,
 }) => {
   return (
     // LOOP THROUGH COMMENTS
@@ -16,14 +19,16 @@ const Comments = ({
       {commentsArray?.map((comment) => (
         <Comment
           key={comment.id}
+          // DATA
           comment={comment}
           currentUser={user}
           comments={commentsArray}
+          // ACTIONS
           setComments={setComments}
           handleAddReply={handleAddReply}
           handleEditComment={handleEditComment}
           handleDeleteComment={handleDeleteComment}
-          updateCommentScore={updateCommentScore}
+          handleVoting={handleVoting}
         />
       ))}
     </div>

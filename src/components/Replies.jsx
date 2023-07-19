@@ -1,12 +1,15 @@
 import Comment from "./Comment";
 
 const Replies = ({
+  // DATA
   comment,
   currentUser,
+
+  // ACTIONS
   handleAddReply,
   handleEditComment,
   handleDeleteComment,
-  updateCommentScore,
+  handleVoting,
 }) => {
   return (
     <div className="replies">
@@ -15,12 +18,14 @@ const Replies = ({
         comment.replies.map((reply) => (
           <Comment
             key={reply.id}
+            // DATA
             comment={reply}
             currentUser={currentUser}
+            // ACTIONS
             handleAddReply={handleAddReply}
             handleEditComment={handleEditComment}
             handleDeleteComment={handleDeleteComment}
-            updateCommentScore={updateCommentScore}
+            handleVoting={handleVoting}
           />
         ))}
     </div>

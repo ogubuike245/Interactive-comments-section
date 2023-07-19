@@ -5,38 +5,42 @@ import Replies from "./Replies";
 import FormComponent from "./FormComponent.jsx";
 
 const Comment = ({
-  // INITIAL DATA
+  //  DATA
   currentUser,
   comment,
+
+  // ACTIONS
   handleAddReply,
   handleEditComment,
   handleDeleteComment,
-  updateCommentScore,
-
-  // ACTIONS
+  handleVoting,
 }) => {
   const [showReplyForm, setShowReplyForm] = useState(false);
-  const [inputValue, setInputValue] = useState("");
   const [showEditForm, setShowEditForm] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   const [score, setScore] = useState(comment.score);
 
   const toggleReplyForm = () => {
+    setShowEditForm(false);
     setShowReplyForm((prev) => !prev);
     setInputValue("");
   };
 
   const toggleEditForm = () => {
+    setShowReplyForm(false);
     setShowEditForm((prev) => !prev);
     setInputValue(comment.content);
   };
 
+  // UPVOTE
   const incrementScore = () => {
-    updateCommentScore(comment.id, 1);
+    handleVoting(comment.id, 1);
     setScore((prev) => prev + 1);
   };
 
+  // DOWNVOTE
   const decrementScore = () => {
-    updateCommentScore(comment.id, -1);
+    handleVoting(comment.id, -1);
     setScore((prev) => prev - 1);
   };
 
@@ -79,7 +83,6 @@ const Comment = ({
         </div>
 
         {/* COMMENT SCORE  */}
-
         <div className="comment-score">
           <i className="fa fa-minus" onClick={decrementScore}></i>
           <strong>{score}</strong>
@@ -126,12 +129,14 @@ const Comment = ({
 
       {/* COMMENT REPLIES  */}
       <Replies
+        // DATA
         comment={comment}
         currentUser={currentUser}
+        // ACTIONS
         handleAddReply={handleAddReply}
         handleEditComment={handleEditComment}
         handleDeleteComment={handleDeleteComment}
-        updateCommentScore={updateCommentScore}
+        handleVoting={handleVoting}
       />
     </>
   );

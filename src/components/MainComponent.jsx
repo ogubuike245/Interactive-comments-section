@@ -11,6 +11,7 @@ import commentsData from "../comments.json";
 // HOOKS
 import useCommentSystem from "../hooks/useCommentSystem";
 import useLocalStorage from "../hooks/useLocalStorage";
+import useVotesSystem from "../hooks/useVotesSystem";
 
 const MainComponent = () => {
   const [currentUser, setCurrentUser] = useState(userData.currentUser);
@@ -26,6 +27,8 @@ const MainComponent = () => {
     editComment,
     deleteComment,
   } = useCommentSystem(currentUser);
+
+  const { updateCommentScore } = useVotesSystem(commentsArray);
 
   // CREATE A FIRST LEVEL COMMENT
   const handleAddComment = (comments, commentContent) => {
@@ -55,25 +58,10 @@ const MainComponent = () => {
     setCommentsArray(result);
   };
 
-  const updateCommentScore = (id, increment) => {
-    const updateRecursive = (comment) => {
-      if (comment.id === id) {
-        return {
-          ...comment,
-          score: comment.score + increment,
-        };
-      }
-
-      if (comment.replies) {
-        comment.replies = comment.replies.map(updateRecursive);
-      }
-
-      return comment;
-    };
-
-    const updatedComments = commentsArray.map(updateRecursive);
-
-    setCommentsArray(updatedComments);
+  // VOTING SYSTEM FOR COMMENTS AND REPLIES
+  const handleVoting = (commentId, increment) => {
+    const result = updateCommentScore(commentId, increment);
+    setCommentsArray(result);
   };
 
   useEffect(() => {
@@ -84,17 +72,19 @@ const MainComponent = () => {
     <section>
       <main>
         <Comments
+          // DATA
           user={currentUser}
           commentsArray={commentsArray}
+          // ACTIONS
           setComments={setCommentsArray}
           handleAddReply={handleAddReply}
           handleEditComment={handleEditComment}
           handleDeleteComment={handleDeleteComment}
-          updateCommentScore={updateCommentScore}
+          handleVoting={handleVoting}
         />
 
         <FirstLevelCommentForm
-          // data
+          // DATA
           user={currentUser}
           commentsArray={commentsArray}
           // ACTIONS
