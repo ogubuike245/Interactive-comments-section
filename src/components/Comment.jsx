@@ -11,12 +11,14 @@ const Comment = ({
   handleAddReply,
   handleEditComment,
   handleDeleteComment,
+  updateCommentScore,
 
   // ACTIONS
 }) => {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [showEditForm, setShowEditForm] = useState(false);
+  const [score, setScore] = useState(comment.score);
 
   const toggleReplyForm = () => {
     setShowReplyForm((prev) => !prev);
@@ -26,6 +28,16 @@ const Comment = ({
   const toggleEditForm = () => {
     setShowEditForm((prev) => !prev);
     setInputValue(comment.content);
+  };
+
+  const incrementScore = () => {
+    updateCommentScore(comment.id, 1);
+    setScore((prev) => prev + 1);
+  };
+
+  const decrementScore = () => {
+    updateCommentScore(comment.id, -1);
+    setScore((prev) => prev - 1);
   };
 
   // REPLY COMMENT
@@ -43,6 +55,8 @@ const Comment = ({
     handleEditComment(comment.id, inputValue);
     toggleEditForm();
   };
+
+  // DELETE COMMENT
   const handleCommentDelete = () => {
     handleDeleteComment(comment.id);
   };
@@ -65,10 +79,11 @@ const Comment = ({
         </div>
 
         {/* COMMENT SCORE  */}
+
         <div className="comment-score">
-          <i className="fa fa-minus"></i>
-          <strong>{comment.score}</strong>
-          <i className="fa fa-plus"></i>
+          <i className="fa fa-minus" onClick={decrementScore}></i>
+          <strong>{score}</strong>
+          <i className="fa fa-plus" onClick={incrementScore}></i>
         </div>
 
         {/* COMMENT ACTIONS  */}
@@ -116,6 +131,7 @@ const Comment = ({
         handleAddReply={handleAddReply}
         handleEditComment={handleEditComment}
         handleDeleteComment={handleDeleteComment}
+        updateCommentScore={updateCommentScore}
       />
     </>
   );

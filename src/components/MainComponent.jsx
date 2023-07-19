@@ -55,6 +55,27 @@ const MainComponent = () => {
     setCommentsArray(result);
   };
 
+  const updateCommentScore = (id, increment) => {
+    const updateRecursive = (comment) => {
+      if (comment.id === id) {
+        return {
+          ...comment,
+          score: comment.score + increment,
+        };
+      }
+
+      if (comment.replies) {
+        comment.replies = comment.replies.map(updateRecursive);
+      }
+
+      return comment;
+    };
+
+    const updatedComments = commentsArray.map(updateRecursive);
+
+    setCommentsArray(updatedComments);
+  };
+
   useEffect(() => {
     localStorage.setItem("comments", JSON.stringify(commentsArray));
   }, [commentsArray]);
@@ -69,6 +90,7 @@ const MainComponent = () => {
           handleAddReply={handleAddReply}
           handleEditComment={handleEditComment}
           handleDeleteComment={handleDeleteComment}
+          updateCommentScore={updateCommentScore}
         />
 
         <FirstLevelCommentForm

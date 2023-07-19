@@ -8,6 +8,7 @@ const Comments = ({
   handleAddReply,
   handleEditComment,
   handleDeleteComment,
+  updateCommentScore,
 }) => {
   return (
     // LOOP THROUGH COMMENTS
@@ -22,6 +23,7 @@ const Comments = ({
           handleAddReply={handleAddReply}
           handleEditComment={handleEditComment}
           handleDeleteComment={handleDeleteComment}
+          updateCommentScore={updateCommentScore}
         />
       ))}
     </div>

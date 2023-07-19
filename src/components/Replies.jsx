@@ -6,6 +6,7 @@ const Replies = ({
   handleAddReply,
   handleEditComment,
   handleDeleteComment,
+  updateCommentScore,
 }) => {
   return (
     <div className="replies">
@@ -19,6 +20,7 @@ const Replies = ({
             handleAddReply={handleAddReply}
             handleEditComment={handleEditComment}
             handleDeleteComment={handleDeleteComment}
+            updateCommentScore={updateCommentScore}
           />
         ))}
     </div>
