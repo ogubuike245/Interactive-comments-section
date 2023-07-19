@@ -1,51 +1,52 @@
 import { useState } from "react";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-dayjs.extend(relativeTime);
-
-// Utility function to format the comment date
-function formatCommentDate(createdAt) {
-  const createdAtDate = dayjs(createdAt);
-  return createdAtDate.fromNow();
-}
 
 // Local imports
 import Replies from "./Replies";
-import useNode from "../hooks/useNode";
-import ReplyForm from "./ReplyForm";
+import FormComponent from "./FormComponent.jsx";
 
 const Comment = ({
-  comment,
+  // INITIAL DATA
   currentUser,
+  comment,
   handleAddReply,
   handleEditComment,
   handleDeleteComment,
+
+  // ACTIONS
 }) => {
   const [showReplyForm, setShowReplyForm] = useState(false);
-  const [replyInput, setReplyInput] = useState("");
-
-  const { addNode, updateNode, removeNode } = useNode();
+  const [inputValue, setInputValue] = useState("");
+  const [showEditForm, setShowEditForm] = useState(false);
 
   const toggleReplyForm = () => {
     setShowReplyForm((prev) => !prev);
-    setReplyInput(""); // Clear the input field when showing/hiding the form
+    setInputValue("");
   };
+
+  const toggleEditForm = () => {
+    setShowEditForm((prev) => !prev);
+    setInputValue(comment.content);
+  };
+
+  // REPLY COMMENT
 
   const handleCommentReply = (event) => {
     event.preventDefault();
-    addNode(comment, comment.id, replyInput);
+
+    handleAddReply(comment.id, inputValue);
     toggleReplyForm();
   };
-  const handleCommentDelete = (event) => {
-    event.preventDefault();
-    addNode(comment, comment.id, replyInput);
-    toggleReplyForm();
-  };
+  // EDIT COMMENT
   const handleCommentUpdate = (event) => {
     event.preventDefault();
-    addNode(comment, comment.id, replyInput);
-    toggleReplyForm();
+
+    handleEditComment(comment.id, inputValue);
+    toggleEditForm();
   };
+  const handleCommentDelete = () => {
+    handleDeleteComment(comment.id);
+  };
+
   return (
     <>
       <article className="comment">
@@ -55,7 +56,7 @@ const Comment = ({
             <img src={comment.user.image.png} alt={comment.user.username} />
           </div>
           <span className="username">{comment.user.username}</span>
-          <span className="date-created">{formatCommentDate(comment)}</span>
+          <span className="date-created">{comment.createdAt}</span>
         </div>
 
         {/* COMMENT CONTENT  */}
@@ -71,25 +72,51 @@ const Comment = ({
         </div>
 
         {/* COMMENT ACTIONS  */}
-        <div className="actions" onClick={toggleReplyForm}>
-          <i className="fa fa-reply"></i>
-          <span>Reply</span>
+        <div className="actions">
+          <div onClick={toggleReplyForm}>
+            <i className="fa fa-reply"></i>
+            <span>Reply</span>
+          </div>
+          <div onClick={toggleEditForm}>
+            <i className="fa fa-edit"></i>
+            <span>Edit</span>
+          </div>
+          <div onClick={handleCommentDelete}>
+            <i className="fa fa-trash"></i>
+            <span>Delete</span>
+          </div>
         </div>
       </article>
 
       {/* SHOW THE REPLY FORM */}
       {showReplyForm && (
-        <ReplyForm
-          handleCommentReply={handleCommentReply}
-          replyInput={replyInput}
-          setReplyInput={setReplyInput}
+        <FormComponent
+          onSubmit={handleCommentReply}
+          inputValue={inputValue}
+          setInputValue={setInputValue}
+          currentUser={currentUser}
+          placeholder={"Add a reply..."}
+        />
+      )}
+      {/* SHOW THE REPLY FORM */}
+      {showEditForm && (
+        <FormComponent
+          onSubmit={handleCommentUpdate}
+          inputValue={inputValue}
+          setInputValue={setInputValue}
           comment={comment}
           currentUser={currentUser}
         />
       )}
 
       {/* COMMENT REPLIES  */}
-      <Replies comment={comment} currentUser={currentUser} />
+      <Replies
+        comment={comment}
+        currentUser={currentUser}
+        handleAddReply={handleAddReply}
+        handleEditComment={handleEditComment}
+        handleDeleteComment={handleDeleteComment}
+      />
     </>
   );
 };

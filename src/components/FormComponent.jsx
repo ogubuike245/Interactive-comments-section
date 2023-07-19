@@ -1,13 +1,14 @@
 import React from "react";
 
-const ReplyForm = ({
-  handleCommentReply,
-  replyInput,
-  setReplyInput,
+const FormComponent = ({
+  onSubmit,
+  inputValue,
+  setInputValue,
   currentUser,
+  placeholder,
 }) => {
   return (
-    <form onSubmit={handleCommentReply} className="reply-form">
+    <form onSubmit={onSubmit} className="reply-form">
       <div className="form-avatar">
         <img src={currentUser.image.png} alt="" />
       </div>
@@ -16,9 +17,9 @@ const ReplyForm = ({
         name="form-input"
         className="form-input"
         id="form-input"
-        value={replyInput}
-        onChange={(e) => setReplyInput(e.target.value)}
-        placeholder="Add a reply..."
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        placeholder={placeholder}
       ></textarea>
       <button type="submit" className="form-button">
         Send
@@ -27,4 +28,4 @@ const ReplyForm = ({
   );
 };
 
-export default ReplyForm;
+export default FormComponent;

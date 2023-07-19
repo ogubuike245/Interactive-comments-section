@@ -1,9 +1,10 @@
-import React from "react";
 import Comment from "./Comment";
-import useNode from "../hooks/useNode";
 
+// Comments.jsx
 const Comments = ({
-  commentsData,
+  user,
+  commentsArray,
+  setComments,
   handleAddReply,
   handleEditComment,
   handleDeleteComment,
@@ -11,11 +12,13 @@ const Comments = ({
   return (
     // LOOP THROUGH COMMENTS
     <div className="comments-section">
-      {commentsData.comments.map((comment) => (
+      {commentsArray?.map((comment) => (
         <Comment
           key={comment.id}
           comment={comment}
-          currentUser={commentsData.currentUser}
+          currentUser={user}
+          comments={commentsArray}
+          setComments={setComments}
           handleAddReply={handleAddReply}
           handleEditComment={handleEditComment}
           handleDeleteComment={handleDeleteComment}

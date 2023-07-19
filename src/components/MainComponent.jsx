@@ -1,42 +1,82 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
+
+// LOCAL IMPORTS
 import Comments from "./Comments";
-import CreateCommentForm from "./CreateCommentForm";
+import FirstLevelCommentForm from "./FirstLevelCommentForm";
 
 // JSON
-import jsonData from "../data.json";
-import useNode from "../hooks/useNode";
+import userData from "../user.json";
+import commentsData from "../comments.json";
+
+// HOOKS
+import useCommentSystem from "../hooks/useCommentSystem";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 const MainComponent = () => {
-  const [commentsData, setCommentsData] = useState(jsonData);
+  const [currentUser, setCurrentUser] = useState(userData.currentUser);
 
-  const [editMode, setEditMode] = useState(false);
+  const [commentsArray, setCommentsArray] = useLocalStorage(
+    "comments",
+    commentsData
+  );
 
-  const { addNode, updateNode, removeNode } = useNode(); // Destructure functions
+  const {
+    createFirstLevelComment,
+    createCommentReply,
+    editComment,
+    deleteComment,
+  } = useCommentSystem(currentUser);
 
-  const handleAddReply = (item) => {
-    const updatedComment = addNode(comment, comment.id, item);
+  // CREATE A FIRST LEVEL COMMENT
+  const handleAddComment = (comments, commentContent) => {
+    const result = createFirstLevelComment(comments, commentContent);
+    setCommentsArray(result);
   };
 
-  const handleEditComment = (value) => {
-    const updatedComment = updateNode(comment, comment.id, value);
+  // REPLY TO FIRST LEVEL COMMENT
+  const handleAddReply = (commentId, commentContent) => {
+    const updatedComments = createCommentReply(
+      commentsArray,
+      commentId,
+      commentContent
+    );
+    setCommentsArray(updatedComments);
   };
 
-  const handleDeleteComment = () => {
-    const updatedComments = removeNode(comments, comment.id);
+  //EDIT COMMENTS AND REPLIES
+  const handleEditComment = (commentId, commentContent) => {
+    const result = editComment(commentsArray, commentId, commentContent);
+    setCommentsArray(result);
   };
+
+  // DELETE COMMENTS AND REPLIES
+  const handleDeleteComment = (commentId) => {
+    const result = deleteComment(commentsArray, commentId);
+    setCommentsArray(result);
+  };
+
+  useEffect(() => {
+    localStorage.setItem("comments", JSON.stringify(commentsArray));
+  }, [commentsArray]);
 
   return (
     <section>
       <main>
         <Comments
-          commentsData={commentsData}
+          user={currentUser}
+          commentsArray={commentsArray}
+          setComments={setCommentsArray}
           handleAddReply={handleAddReply}
           handleEditComment={handleEditComment}
           handleDeleteComment={handleDeleteComment}
         />
-        <CreateCommentForm
-          commentsData={commentsData}
-          setCommentsData={setCommentsData}
+
+        <FirstLevelCommentForm
+          // data
+          user={currentUser}
+          commentsArray={commentsArray}
+          // ACTIONS
+          handleAddComment={handleAddComment}
         />
       </main>
     </section>
