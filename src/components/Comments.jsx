@@ -82,7 +82,7 @@ const Comments = ({
     );
 
     setSortedComments(mergedSortedComments);
-  }, []);
+  }, [commentsArray]);
 
   return (
     // LOOP THROUGH COMMENTS

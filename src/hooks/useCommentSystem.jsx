@@ -8,9 +8,9 @@ const useCommentSystem = (currentUser) => {
   };
 
   const createCommentReply = (comments, commentId, commentContent) => {
-    const newComment = createComment(commentContent);
-
     const insertRecursiveReply = (comment) => {
+      const newComment = createComment(commentContent, comment.user.username);
+
       if (comment.id === commentId) {
         return {
           ...comment,
@@ -66,12 +66,13 @@ const useCommentSystem = (currentUser) => {
   }
 
   // REUSABLE
-  const createComment = (commentContent) => {
+  const createComment = (commentContent, to) => {
     return {
       id: new Date().getTime().toString(),
       content: commentContent,
       createdAt: new Date().toLocaleString(),
       score: 0,
+      replyingTo: to,
       user: {
         image: { png, webp },
         username,
