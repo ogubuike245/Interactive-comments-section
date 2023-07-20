@@ -6,6 +6,7 @@ const FormComponent = ({
   currentUser,
   inputValue,
   placeholder,
+  type,
   // ACTIONS
   onSubmit,
   setInputValue,
@@ -46,7 +47,7 @@ const FormComponent = ({
         placeholder={placeholder}
       ></textarea>
       <button type="submit" className="form-button">
-        Send
+        {type}
       </button>
     </motion.form>
   );

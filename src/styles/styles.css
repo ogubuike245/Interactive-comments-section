@@ -66,7 +66,7 @@ main {
 /* COMMENTS  */
 
 .comments-section {
-  gap: 1rem;
+  gap: 0.5rem;
   display: flex;
   flex-direction: column;
 }
@@ -78,6 +78,7 @@ main {
     "content  content content"
     "score-area ..... actions";
   grid-template-columns: 100px 1fr 1fr;
+  grid-template-rows: 50px 1fr 50px;
   gap: 1rem;
   height: 100%;
   background-color: var(--White);
@@ -88,6 +89,7 @@ main {
 .replies {
   display: flex;
   flex-direction: column;
+
   gap: 1rem;
   border-left: 2px solid var(--LightGrayishBlue);
   padding-inline-start: 1rem;
@@ -102,15 +104,48 @@ main {
 
 .content {
   grid-area: content;
-  /* border: 2px solid red; */
 }
 .content p {
-  /* white-space: nowrap;
-  overflow: hidden;
-  text-overflow: inherit; */
   line-height: 1.3;
 }
+.content p strong {
+  color: var(--ModerateBlue);
+}
 
+.content .editing {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+}
+textarea {
+  width: 100%;
+  resize: none;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  outline: none;
+  border: 1px solid var(--LightGrayishBlue);
+  /* border: none; */
+}
+
+textarea:focus {
+  border: 1px solid var(--ModerateBlue);
+  caret-color: var(--ModerateBlue);
+  /* styles */
+}
+
+.content button {
+  padding: 0.5rem 2rem;
+  border-radius: 0.5rem;
+  outline: none;
+  border: none;
+  background-color: var(--ModerateBlue);
+  color: var(--White);
+  cursor: pointer;
+}
+.content button:hover {
+  background-color: var(--LightGrayishBlue);
+}
 .comment-score {
   grid-area: score-area;
   display: flex;
@@ -135,18 +170,38 @@ main {
 .actions {
   grid-area: actions;
   display: flex;
-  gap: 0.5rem;
+  gap: 1.2rem;
   align-items: center;
   justify-content: flex-end;
-  color: var(--ModerateBlue);
 }
 .actions i,
 .actions span {
   cursor: pointer;
+  transition: all 0.2s ease !important;
 }
-.actions i:hover,
-.actions span:hover {
-  color: var(--LightGray);
+
+.edit-icon,
+.reply-icon {
+  color: var(--ModerateBlue);
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  cursor: pointer;
+}
+.edit-icon:hover,
+.reply-icon:hover {
+  color: var(--LightGrayishBlue);
+}
+
+.delete-icon {
+  color: var(--SoftRed);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+}
+.delete-icon:hover {
+  color: var(--PaleRed);
 }
 
 .username {
@@ -154,11 +209,19 @@ main {
   font-weight: 800;
 }
 
+.user-check {
+  background-color: var(--ModerateBlue);
+  color: var(--White);
+  padding: 0.2rem 0.4rem;
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  border-radius: 0.3rem;
+}
 .user-avatar {
   width: 30px;
   height: 30px;
 }
-
 /* FORM  */
 form {
   background-color: var(--White);
@@ -177,19 +240,20 @@ form {
 
 .form-avatar {
   grid-area: form-avatar;
-  /* border: 1px solid red; */
 }
 
 .form-input {
   grid-area: form-input;
   resize: none;
   padding: 1rem;
-  border: 1px solid var(--LightGrayishBlue);
   border-radius: 0.5rem;
-  outline: 1px solid transparent;
+  border: 1px solid var(--LightGrayishBlue);
+  outline: none;
 }
 .form-input:focus {
-  outline: 1px solid var(--ModerateBlue);
+  border-radius: 0.5rem;
+  border: 1px solid var(--ModerateBlue);
+  /* outline: 1px solid var(--ModerateBlue); */
 }
 
 .form-button {
@@ -213,30 +277,78 @@ form {
     padding: 3rem 0;
   }
   main {
-    width: 60%;
+    width: 70%;
     margin: auto;
   }
   /* COMMENTS  */
 
   .comments-section {
     width: 100%;
+    display: flex;
+    gap: 1rem;
   }
 
   .comment {
+    grid-template-areas:
+      "score-area user-info actions"
+      "score-area  content content"
+      ".... content content";
+    grid-template-columns: 20px 1fr 1fr;
+    gap: 1.5rem;
   }
 
   .replies {
+    margin-inline-start: 2rem;
+    padding-inline-start: 2rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .replies article.comment {
+    position: relative;
   }
 
   .user-info {
   }
 
-  .content {
+  .content .editing {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
   }
-  .content p {
+  textarea {
+    width: 100%;
+    resize: none;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    outline: 1px solid var(--LightGrayishBlue);
+    border: none;
+  }
+
+  textarea:focus {
+    outline: 1px solid var(--ModerateBlue);
+    caret-color: var(--ModerateBlue);
+    /* styles */
+  }
+
+  .content button {
+    padding: 0.5rem 2rem;
+    border-radius: 0.5rem;
+    outline: none;
+    border: none;
+    background-color: var(--ModerateBlue);
+    color: var(--White);
+    cursor: pointer;
+  }
+  .content button:hover {
+    background-color: var(--LightGrayishBlue);
   }
 
   .comment-score {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
   }
   .comment-score i {
   }
@@ -253,5 +365,49 @@ form {
   }
 
   .user-avatar {
+  }
+
+  /* FORM  */
+  form {
+    background-color: var(--White);
+    display: grid;
+    grid-template-columns: 50px 1fr 100px;
+    grid-template-rows: 50px 50px;
+    grid-template-areas:
+      "form-avatar form-input form-button"
+      ".... form-input .....";
+    gap: 0.5rem;
+    padding: 1rem;
+    width: 100%;
+    border-radius: 0.5rem;
+  }
+
+  .form-avatar {
+    grid-area: form-avatar;
+  }
+
+  .form-input {
+    grid-area: form-input;
+    resize: none;
+    padding: 1rem;
+    border: 1px solid var(--LightGrayishBlue);
+    border-radius: 0.5rem;
+    outline: 1px solid transparent;
+  }
+  .form-input:focus {
+    outline: 1px solid var(--ModerateBlue);
+  }
+
+  .form-button {
+    grid-area: form-button;
+    border-radius: 0.5rem;
+    outline: none;
+    border: none;
+    background-color: var(--ModerateBlue);
+    color: var(--White);
+    cursor: pointer;
+  }
+  .form-button:hover {
+    background-color: var(--LightGrayishBlue);
   }
 }

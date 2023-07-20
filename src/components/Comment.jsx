@@ -1,10 +1,30 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 // Local imports
 import Replies from "./Replies";
-import ReplyForm from "./FormComponent.jsx";
-import EditForm from "./FormComponent.jsx";
+import FormComponent from "./FormComponent.jsx";
 
+const commentVariants = {
+  hidden: {
+    opacity: 0,
+    x: -50,
+  },
+
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "slide",
+      stiffness: 20,
+      damping: 5,
+      duration: 0.3,
+    },
+  },
+  exit: {
+    opacity: 0,
+    x: -50,
+  },
+};
 const Comment = ({
   //  DATA
   currentUser,
@@ -17,36 +37,54 @@ const Comment = ({
   handleVoting,
 }) => {
   const [showReplyForm, setShowReplyForm] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [contentEditable, setContentEditable] = useState(false);
   const [score, setScore] = useState(comment.score);
 
+  // Function to calculate time difference between now and the comment's createdAt
+  const getTimeDifference = () => {
+    const createdAt = new Date(comment.createdAt);
+    const now = new Date();
+    const differenceInSeconds = Math.floor((now - createdAt) / 1000);
+
+    if (differenceInSeconds < 60) {
+      return `${differenceInSeconds}s ago`;
+    } else if (differenceInSeconds < 3600) {
+      return `${Math.floor(differenceInSeconds / 60)}m ago`;
+    } else if (differenceInSeconds < 86400) {
+      return `${Math.floor(differenceInSeconds / 3600)}h ago`;
+    } else if (differenceInSeconds < 2592000) {
+      return `${Math.floor(differenceInSeconds / 86400)}d ago`;
+    } else if (differenceInSeconds < 31536000) {
+      return `${Math.floor(differenceInSeconds / 2592000)}mo ago`;
+    } else {
+      return `${Math.floor(differenceInSeconds / 31536000)}y ago`;
+    }
+  };
+
   const toggleReplyForm = () => {
-    setShowEditForm(false);
     setShowReplyForm((prev) => !prev);
     setInputValue("");
   };
 
-  const toggleEditForm = () => {
-    setShowReplyForm(false);
-    setShowEditForm((prev) => !prev);
+  const toggleEdit = () => {
+    setContentEditable((prev) => !prev);
     setInputValue(comment.content);
   };
 
-  // UPVOTE
+  // UPvOTE
   const incrementScore = () => {
     handleVoting(comment.id, 1);
     setScore((prev) => prev + 1);
   };
 
-  // DOWNVOTE
+  // DOWNvOTE
   const decrementScore = () => {
     handleVoting(comment.id, -1);
     setScore((prev) => prev - 1);
   };
 
   // REPLY COMMENT
-
   const handleCommentReply = (event) => {
     event.preventDefault();
 
@@ -58,34 +96,12 @@ const Comment = ({
     event.preventDefault();
 
     handleEditComment(comment.id, inputValue);
-    toggleEditForm();
+    setContentEditable(false);
   };
 
   // DELETE COMMENT
   const handleCommentDelete = () => {
     handleDeleteComment(comment.id);
-  };
-
-  const commentVariants = {
-    hidden: {
-      opacity: 0,
-      x: -50,
-    },
-
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        type: "slide",
-        stiffness: 20,
-        damping: 5,
-        duration: 0.3,
-      },
-    },
-    exit: {
-      opacity: 0,
-      x: -50,
-    },
   };
 
   return (
@@ -103,12 +119,34 @@ const Comment = ({
             <img src={comment.user.image.png} alt={comment.user.username} />
           </div>
           <span className="username">{comment.user.username}</span>
-          <span className="date-created">{comment.createdAt}</span>
+          {currentUser.username === comment.user.username && (
+            <span className="user-check">you</span>
+          )}
+          <span className="date-created">{getTimeDifference()}</span>
         </div>
 
         {/* COMMENT CONTENT  */}
         <div className="content">
-          <p>{comment.content}</p>
+          {contentEditable ? (
+            <div className="editing">
+              <textarea
+                autoFocus={contentEditable}
+                name=""
+                id=""
+                rows="5"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                className={contentEditable ? "edit" : ""}
+              ></textarea>
+
+              <button onClick={handleCommentUpdate}>UPDATE</button>
+            </div>
+          ) : (
+            <p>
+              <strong>{comment.replyingTo && `@${comment.replyingTo} `}</strong>
+              {comment.content}
+            </p>
+          )}
         </div>
 
         {/* COMMENT SCORE  */}
@@ -120,25 +158,32 @@ const Comment = ({
 
         {/* COMMENT ACTIONS  */}
         <div className="actions">
-          <div onClick={toggleReplyForm}>
-            <i className="fa fa-reply"></i>
-            <span>Reply</span>
-          </div>
-          <div onClick={toggleEditForm}>
-            <i className="fa fa-edit"></i>
-            <span>Edit</span>
-          </div>
-          <div onClick={handleCommentDelete}>
-            <i className="fa fa-trash"></i>
-            <span>Delete</span>
-          </div>
+          {currentUser.username != comment.user.username && (
+            <div onClick={toggleReplyForm} className="reply-icon">
+              <i className="fa fa-reply"></i>
+              <span>Reply</span>
+            </div>
+          )}
+
+          {currentUser.username === comment.user.username && (
+            <>
+              <div onClick={toggleEdit} className="edit-icon">
+                <i className="fa fa-edit"></i>
+                <span>Edit</span>
+              </div>
+              <div onClick={handleCommentDelete} className="delete-icon">
+                <i className="fa fa-trash"></i>
+                <span>Delete</span>
+              </div>
+            </>
+          )}
         </div>
       </motion.article>
 
       <AnimatePresence mode="wait">
-        {showReplyForm ? (
-          // {/* SHOW THE REPLY FORM */}
-          <ReplyForm
+        {/* SHOW THE REPLY FORM */}
+        {showReplyForm && (
+          <FormComponent
             transition={{ duration: 0.3 }}
             key="reply"
             inputValue={inputValue}
@@ -147,23 +192,13 @@ const Comment = ({
             comment={comment}
             currentUser={currentUser}
             placeholder={"Add a reply..."}
+            type={"Reply"}
           />
-        ) : showEditForm ? (
-          // {/* SHOW THE REPLY FORM */}
-          <EditForm
-            transition={{ duration: 0.3 }}
-            key="edit"
-            onSubmit={handleCommentUpdate}
-            inputValue={inputValue}
-            setInputValue={setInputValue}
-            currentUser={currentUser}
-          />
-        ) : null}
+        )}
       </AnimatePresence>
 
-      {/* COMMENT REPLIES  */}
-
       <AnimatePresence>
+        {/* COMMENT REPLIES  */}
         <Replies
           // DATA
           comment={comment}
