@@ -1,3 +1,4 @@
+import { motion, AnimatePresence } from "framer-motion";
 import Comment from "./Comment";
 
 const Replies = ({
@@ -13,21 +14,23 @@ const Replies = ({
 }) => {
   return (
     <div className="replies">
-      {comment.replies &&
-        comment.replies.length > 0 &&
-        comment.replies.map((reply) => (
-          <Comment
-            key={reply.id}
-            // DATA
-            comment={reply}
-            currentUser={currentUser}
-            // ACTIONS
-            handleAddReply={handleAddReply}
-            handleEditComment={handleEditComment}
-            handleDeleteComment={handleDeleteComment}
-            handleVoting={handleVoting}
-          />
-        ))}
+      <AnimatePresence>
+        {comment.replies &&
+          comment.replies.length > 0 &&
+          comment.replies.map((reply) => (
+            <Comment
+              key={reply.id}
+              // DATA
+              comment={reply}
+              currentUser={currentUser}
+              // ACTIONS
+              handleAddReply={handleAddReply}
+              handleEditComment={handleEditComment}
+              handleDeleteComment={handleDeleteComment}
+              handleVoting={handleVoting}
+            />
+          ))}
+      </AnimatePresence>
     </div>
   );
 };

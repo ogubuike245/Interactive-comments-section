@@ -67,17 +67,21 @@ const useCommentSystem = (currentUser) => {
 
   // REUSABLE
   const createComment = (commentContent, to) => {
-    return {
+    const comment = {
       id: new Date().getTime().toString(),
       content: commentContent,
       createdAt: new Date().toLocaleString(),
       score: 0,
-      replyingTo: to,
       user: {
         image: { png, webp },
         username,
       },
       replies: [],
+    };
+
+    return {
+      ...comment,
+      ...(to && { replyingTo: to }),
     };
   };
 

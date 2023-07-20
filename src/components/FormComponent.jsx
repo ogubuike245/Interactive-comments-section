@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 const FormComponent = ({
   // DATA
@@ -9,8 +10,28 @@ const FormComponent = ({
   onSubmit,
   setInputValue,
 }) => {
+  const commentVariants = {
+    hidden: { opacity: 0, x: -50 },
+
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        type: "slide",
+        duration: 0.1,
+      },
+    },
+    exit: { opacity: 0, x: 50 },
+  };
   return (
-    <form onSubmit={onSubmit} className="reply-form">
+    <motion.form
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      variants={commentVariants}
+      onSubmit={onSubmit}
+      className="reply-form"
+    >
       <div className="form-avatar">
         <img src={currentUser.image.png} alt="" />
       </div>
@@ -27,7 +48,7 @@ const FormComponent = ({
       <button type="submit" className="form-button">
         Send
       </button>
-    </form>
+    </motion.form>
   );
 };
 

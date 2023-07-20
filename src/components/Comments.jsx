@@ -1,48 +1,7 @@
-// import Comment from "./Comment";
-
-// // Comments.jsx
-// const Comments = ({
-//   // DATA
-//   user,
-//   commentsArray,
-
-//   // ACTIONS
-//   setComments,
-//   handleAddReply,
-//   handleEditComment,
-//   handleDeleteComment,
-//   handleVoting,
-// }) => {
-//   return (
-//     // LOOP THROUGH COMMENTS
-//     <div className="comments-section">
-//       {commentsArray?.map((comment) => (
-//         <Comment
-//           key={comment.id}
-//           // DATA
-//           comment={comment}
-//           currentUser={user}
-//           comments={commentsArray}
-//           // ACTIONS
-//           setComments={setComments}
-//           handleAddReply={handleAddReply}
-//           handleEditComment={handleEditComment}
-//           handleDeleteComment={handleDeleteComment}
-//           handleVoting={handleVoting}
-//         />
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default Comments;
-
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Comment from "./Comment";
 
-// ... (Your other imports)
-
-// Comments.jsx
 const Comments = ({
   // DATA
   user,
@@ -84,24 +43,29 @@ const Comments = ({
     setSortedComments(mergedSortedComments);
   }, [commentsArray]);
 
+  // New comment slide in animation
+
   return (
     // LOOP THROUGH COMMENTS
     <div className="comments-section">
-      {sortedComments?.map((comment) => (
-        <Comment
-          key={comment.id}
-          // DATA
-          comment={comment}
-          currentUser={user}
-          comments={commentsArray}
-          // ACTIONS
-          setComments={setComments}
-          handleAddReply={handleAddReply}
-          handleEditComment={handleEditComment}
-          handleDeleteComment={handleDeleteComment}
-          handleVoting={handleVoting}
-        />
-      ))}
+      <AnimatePresence>
+        {sortedComments?.map((comment) => (
+          <Comment
+            transition={{ duration: 0.3 }}
+            key={comment.id}
+            // DATA
+            comment={comment}
+            currentUser={user}
+            comments={commentsArray}
+            // ACTIONS
+            setComments={setComments}
+            handleAddReply={handleAddReply}
+            handleEditComment={handleEditComment}
+            handleDeleteComment={handleDeleteComment}
+            handleVoting={handleVoting}
+          />
+        ))}
+      </AnimatePresence>
     </div>
   );
 };

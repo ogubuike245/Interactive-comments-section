@@ -1,8 +1,9 @@
 import { useState } from "react";
-
+import { motion, AnimatePresence } from "framer-motion";
 // Local imports
 import Replies from "./Replies";
-import FormComponent from "./FormComponent.jsx";
+import ReplyForm from "./FormComponent.jsx";
+import EditForm from "./FormComponent.jsx";
 
 const Comment = ({
   //  DATA
@@ -65,9 +66,37 @@ const Comment = ({
     handleDeleteComment(comment.id);
   };
 
+  const commentVariants = {
+    hidden: {
+      opacity: 0,
+      x: -50,
+    },
+
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        type: "slide",
+        stiffness: 20,
+        damping: 5,
+        duration: 0.3,
+      },
+    },
+    exit: {
+      opacity: 0,
+      x: -50,
+    },
+  };
+
   return (
     <>
-      <article className="comment">
+      <motion.article
+        variants={commentVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        className="comment"
+      >
         {/* USER INFO AREA  */}
         <div className="user-info">
           <div className="user-avatar">
@@ -104,40 +133,48 @@ const Comment = ({
             <span>Delete</span>
           </div>
         </div>
-      </article>
+      </motion.article>
 
-      {/* SHOW THE REPLY FORM */}
-      {showReplyForm && (
-        <FormComponent
-          onSubmit={handleCommentReply}
-          inputValue={inputValue}
-          setInputValue={setInputValue}
-          currentUser={currentUser}
-          placeholder={"Add a reply..."}
-        />
-      )}
-      {/* SHOW THE REPLY FORM */}
-      {showEditForm && (
-        <FormComponent
-          onSubmit={handleCommentUpdate}
-          inputValue={inputValue}
-          setInputValue={setInputValue}
-          comment={comment}
-          currentUser={currentUser}
-        />
-      )}
+      <AnimatePresence mode="wait">
+        {showReplyForm ? (
+          // {/* SHOW THE REPLY FORM */}
+          <ReplyForm
+            transition={{ duration: 0.3 }}
+            key="reply"
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            onSubmit={handleCommentReply}
+            comment={comment}
+            currentUser={currentUser}
+            placeholder={"Add a reply..."}
+          />
+        ) : showEditForm ? (
+          // {/* SHOW THE REPLY FORM */}
+          <EditForm
+            transition={{ duration: 0.3 }}
+            key="edit"
+            onSubmit={handleCommentUpdate}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            currentUser={currentUser}
+          />
+        ) : null}
+      </AnimatePresence>
 
       {/* COMMENT REPLIES  */}
-      <Replies
-        // DATA
-        comment={comment}
-        currentUser={currentUser}
-        // ACTIONS
-        handleAddReply={handleAddReply}
-        handleEditComment={handleEditComment}
-        handleDeleteComment={handleDeleteComment}
-        handleVoting={handleVoting}
-      />
+
+      <AnimatePresence>
+        <Replies
+          // DATA
+          comment={comment}
+          currentUser={currentUser}
+          // ACTIONS
+          handleAddReply={handleAddReply}
+          handleEditComment={handleEditComment}
+          handleDeleteComment={handleDeleteComment}
+          handleVoting={handleVoting}
+        />
+      </AnimatePresence>
     </>
   );
 };
