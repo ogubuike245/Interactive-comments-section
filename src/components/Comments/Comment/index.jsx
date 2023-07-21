@@ -7,6 +7,7 @@ import FormComponent from "./FormComponent.jsx";
 import { commentVariants, getTimeDifference, showToast } from "../../../utils";
 import ScoreComponent from "./ScoreComponent";
 import ActionsComponent from "./ActionsComponent";
+import Modal from "../../Modal";
 
 const Comment = ({
   //  DATA
@@ -22,10 +23,14 @@ const Comment = ({
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [contentEditable, setContentEditable] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const { score, content, createdAt, replyingTo } = comment;
   const [commentScore, setCommentScore] = useState(score);
 
+  const handleModalState = () => {
+    setShowModal((prev) => !prev);
+  };
   const toggleReplyForm = () => {
     setShowReplyForm((prev) => !prev);
     setInputValue("");
@@ -75,16 +80,26 @@ const Comment = ({
   // DELETE COMMENT
   const handleCommentDelete = () => {
     handleDeleteComment(comment.id);
+    setShowModal((prev) => !prev);
     showToast("Your comment has been removed");
   };
   return (
     <>
+      {currentUser.username === comment.user.username && showModal && (
+        <Modal
+          handleCommentDelete={handleCommentDelete}
+          handleModalState={handleModalState}
+        />
+      )}
       <motion.article
         variants={commentVariants}
         initial="hidden"
         animate="visible"
         exit="exit"
         className="comment"
+        style={
+          !comment.replyingTo && { border: "1px solid var(--GrayishBlue)" }
+        }
       >
         {/* USER INFO AREA  */}
         <div className="user-info">
@@ -109,7 +124,6 @@ const Comment = ({
                 rows="5"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                className={contentEditable ? "edit" : ""}
               ></textarea>
 
               <button onClick={handleCommentUpdate}>UPDATE</button>
@@ -133,7 +147,7 @@ const Comment = ({
         <ActionsComponent
           currentUser={currentUser}
           toggleEdit={toggleEdit}
-          handleCommentDelete={handleCommentDelete}
+          handleModalState={handleModalState}
           toggleReplyForm={toggleReplyForm}
           comment={comment}
         />

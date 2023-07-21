@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import Comment from "./Comment";
+import Modal from "../Modal";
 
 const Comments = ({
   // DATA
@@ -22,28 +23,8 @@ const Comments = ({
       .filter((comment) => !comment.replyingTo)
       .sort((a, b) => b.score - a.score);
 
-    // Sort the replies by time added (nested replies)
-    const sortedReplies = commentsArray
-      .filter((comment) => comment.replyingTo)
-      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-
-    // Merge the sorted first-level comments and sorted replies
-    const mergedSortedComments = sortedFirstLevelComments.reduce(
-      (result, comment) => {
-        result.push(comment);
-        const commentReplies = sortedReplies.filter(
-          (reply) => reply.replyingTo === comment.id
-        );
-        result.push(...commentReplies);
-        return result;
-      },
-      []
-    );
-
-    setSortedComments(mergedSortedComments);
+    setSortedComments(sortedFirstLevelComments);
   }, [commentsArray]);
-
-  // New comment slide in animation
 
   return (
     // LOOP THROUGH COMMENTS

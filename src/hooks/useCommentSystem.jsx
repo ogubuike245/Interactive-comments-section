@@ -1,116 +1,32 @@
+import { v4 as generateRandomId } from "uuid";
+
 const useCommentSystem = (currentUser) => {
   const { username, image } = currentUser;
   const { png, webp } = image;
-  /**
-   *
-   *
-   * @param {*} comments
-   * @param {*} commentContent
-   * @return {*}
-   */
-  const createFirstLevelComment = (comments, commentContent) => {
-    const newComment = createComment(commentContent);
-    return [...comments, newComment];
-  };
-  /**
-   *
-   *
-   * @param {*} comments
-   * @param {*} commentId
-   * @param {*} commentContent
-   * @return {*}
-   */
-  const createCommentReply = (comments, commentId, commentContent) => {
-    const insertRecursiveReply = (comment) => {
-      const newComment = createComment(commentContent, comment.user.username);
 
-      if (username !== comment.user.username) {
-        if (comment.id === commentId) {
-          // Check if the current user is not the comment creator
-          return {
-            ...comment,
-            replies: comment.replies
-              ? [...comment.replies, newComment]
-              : [newComment],
-          };
-        }
-      } else {
-        console.log("You cannot reply to your own comment.");
-      }
-
+  // REUSABLE FUNCTIONS
+  const extractExistingIds = (comments) => {
+    const ids = new Set();
+    comments.forEach((comment) => {
+      ids.add(comment.id);
       if (comment.replies && comment.replies.length > 0) {
-        comment.replies = comment.replies.map(insertRecursiveReply);
+        const replyIds = extractExistingIds(comment.replies);
+        replyIds.forEach((replyId) => ids.add(replyId));
       }
-
-      return comment;
-    };
-
-    const updatedComments = [...comments];
-    return updatedComments.map(insertRecursiveReply);
+    });
+    return ids;
   };
-  /**
-   *
-   *
-   * @param {*} comments
-   * @param {*} id
-   * @param {*} content
-   * @return {*}
-   */
-  function editComment(comments, id, content) {
-    function editRecursive(comment) {
-      if (comment.id === id) {
-        // Check if the current user is the comment creator
-        if (username === comment.user.username) {
-          comment.content = content;
-        } else {
-          console.log("You cannot edit this comment. You are not the creator.");
-        }
-      }
 
-      if (comment.replies) {
-        comment.replies = comment.replies.map(editRecursive);
-      }
+  const createComment = (existingIds, commentContent, to) => {
+    let newId;
+    do {
+      newId = generateRandomId();
+    } while (existingIds.has(newId));
 
-      return comment;
-    }
+    existingIds.add(newId);
 
-    return comments.map(editRecursive);
-  }
-  /**
-   *
-   *
-   * @param {*} comments
-   * @param {*} id
-   * @return {*}
-   */
-  function deleteComment(comments, id) {
-    function deleteRecursive(comment) {
-      // If match, return null to "delete" comment
-
-      if (comment.id === id) {
-        if (username !== comment.user.username) {
-          console.log("You are not the owner!");
-          return comment;
-        }
-
-        return null;
-      }
-
-      // Filter out deleted replies
-      if (comment.replies) {
-        comment.replies = comment.replies.filter(deleteRecursive);
-      }
-
-      return comment;
-    }
-
-    return comments.filter(deleteRecursive);
-  }
-
-  // REUSABLE
-  const createComment = (commentContent, to) => {
     const comment = {
-      id: new Date().getTime().toString(),
+      id: newId,
       content: commentContent,
       createdAt: new Date().toLocaleString(),
       score: 0,
@@ -125,6 +41,89 @@ const useCommentSystem = (currentUser) => {
       ...comment,
       ...(to && { replyingTo: to }),
     };
+  };
+
+  // CREATE TOP LEVEL COMMENTS
+  const createFirstLevelComment = (comments, commentContent) => {
+    const existingIds = extractExistingIds(comments);
+    const newComment = createComment(existingIds, commentContent);
+    return [...comments, newComment];
+  };
+
+  // COMMENT REPLIES
+  const createCommentReply = (comments, commentId, commentContent) => {
+    const insertRecursiveReply = (comment) => {
+      const existingIds = extractExistingIds(comments);
+      const newComment = createComment(
+        existingIds,
+        commentContent,
+        comment.user.username
+      );
+
+      if (comment.id === commentId) {
+        if (username !== comment.user.username) {
+          return {
+            ...comment,
+            replies: comment.replies
+              ? [...comment.replies, newComment]
+              : [newComment],
+          };
+        } else {
+          console.log("You cannot reply to your own comment.");
+        }
+      }
+
+      if (comment.replies && comment.replies.length > 0) {
+        comment.replies = comment.replies.map(insertRecursiveReply);
+      }
+
+      return comment;
+    };
+
+    const updatedComments = [...comments];
+    return updatedComments.map(insertRecursiveReply);
+  };
+
+  // EDIT COMMENTS OR REPLIES
+  const editComment = (comments, id, content) => {
+    const editRecursive = (comment) => {
+      if (comment.id === id) {
+        if (username === comment.user.username) {
+          comment.content = content;
+        } else {
+          console.log("You cannot edit this comment. You are not the creator.");
+        }
+      }
+
+      if (comment.replies) {
+        comment.replies = comment.replies.map(editRecursive);
+      }
+
+      return comment;
+    };
+
+    return comments.map(editRecursive);
+  };
+
+  // DELETE COMMENTS OR REPLIES
+  const deleteComment = (comments, id) => {
+    const deleteRecursive = (comment) => {
+      if (comment.id === id) {
+        if (username !== comment.user.username) {
+          console.log("You are not the owner!");
+          return comment;
+        }
+        return null;
+      }
+
+      if (comment.replies) {
+        comment.replies = comment.replies.filter(deleteRecursive);
+      }
+
+      return comment;
+    };
+
+    return comments.filter(deleteRecursive);
   };
 
   return {

@@ -3,7 +3,7 @@ import React from "react";
 const ActionsComponent = ({
   currentUser,
   toggleEdit,
-  handleCommentDelete,
+  handleModalState,
   toggleReplyForm,
   comment,
 }) => {
@@ -22,7 +22,7 @@ const ActionsComponent = ({
             <i className="fa fa-edit"></i>
             <span>Edit</span>
           </div>
-          <div onClick={handleCommentDelete} className="delete-icon">
+          <div onClick={handleModalState} className="delete-icon">
             <i className="fa fa-trash"></i>
             <span>Delete</span>
           </div>

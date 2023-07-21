@@ -7,16 +7,20 @@ import Comments from "./Comments";
 import FirstLevelCommentForm from "./FirstLevelCommentForm";
 
 // JSON
-import userData from "../user.json";
-import commentsData from "../comments.json";
+import userData from "../data/users.json";
+import commentsData from "../data/comments.json";
 
 // HOOKS
 import useCommentSystem from "../hooks/useCommentSystem";
 import useLocalStorage from "../hooks/useLocalStorage";
 import useVotesSystem from "../hooks/useVotesSystem";
+import UsersList from "./UsersList";
 
 const MainComponent = () => {
-  const [currentUser, setCurrentUser] = useState(userData.currentUser);
+  const [currentUser, setCurrentUser] = useLocalStorage(
+    "user",
+    userData[0] // Set the initial currentUser to the first user from the users.json file
+  );
 
   const [commentsArray, setCommentsArray] = useLocalStorage(
     "comments",
@@ -48,7 +52,7 @@ const MainComponent = () => {
     setCommentsArray(updatedComments);
   };
 
-  //EDIT COMMENTS AND REPLIES
+  // EDIT COMMENTS AND REPLIES
   const handleEditComment = (commentId, commentContent) => {
     const result = editComment(commentsArray, commentId, commentContent);
     setCommentsArray(result);
@@ -66,6 +70,11 @@ const MainComponent = () => {
     setCommentsArray(result);
   };
 
+  // Function to handle user selection from list item
+  const handleUserSelection = (selectedUser) => {
+    setCurrentUser(selectedUser);
+  };
+
   useEffect(() => {
     localStorage.setItem("comments", JSON.stringify(commentsArray));
   }, [commentsArray]);
@@ -74,6 +83,13 @@ const MainComponent = () => {
     <section>
       <main>
         <ToastContainer closeOnClick />
+
+        {/* Unordered list with list items */}
+        <UsersList
+          userData={userData}
+          currentUser={currentUser}
+          handleUserSelection={handleUserSelection}
+        />
         <Comments
           // DATA
           user={currentUser}
