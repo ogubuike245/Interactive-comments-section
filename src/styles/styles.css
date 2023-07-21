@@ -89,9 +89,11 @@ main {
     "user-info user-info user-info"
     "content  content content"
     "score-area ..... actions";
-  grid-template-columns: 100px 1fr 1fr;
-  grid-template-rows: 50px 1fr 50px;
+  grid-template-columns: 90px 1fr 1fr;
+  grid-template-rows: 30px 1fr 30px;
+
   gap: 1rem;
+
   height: 100%;
   background-color: var(--White);
   padding: 1rem;
@@ -396,7 +398,9 @@ h2.heading {
       "score-area  content content"
       ".... content content";
     grid-template-columns: 20px 1fr 1fr;
-    gap: 1.5rem;
+    grid-template-rows: 40px 40px 1fr;
+    row-gap: 0.5rem;
+    column-gap: 1.5rem;
   }
 
   .replies {
