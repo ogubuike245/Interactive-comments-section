@@ -118,6 +118,7 @@ main {
 }
 .content p {
   line-height: 1.3;
+  color: var(--GrayishBlue);
 }
 .content p strong {
   color: var(--ModerateBlue);
@@ -204,6 +205,10 @@ textarea:focus {
   font-weight: 800;
 }
 
+.date-created {
+  color: var(--GrayishBlue);
+}
+
 .user-check {
   background-color: var(--ModerateBlue);
   color: var(--White);
@@ -259,11 +264,15 @@ form {
 .users-list {
   display: flex;
   justify-content: center;
-  /* flex-direction: column; */
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
   align-items: center;
+}
+
+h2.heading {
+  letter-spacing: 2px;
+  word-spacing: 10px;
 }
 
 .users-list li {

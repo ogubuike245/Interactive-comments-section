@@ -11,23 +11,7 @@
       },
       "username": "amyrobson"
     },
-    "replies": [
-      {
-        "id": "reply-1",
-        "content": "Steady Evolving",
-        "createdAt": "7/12/2023, 1:21:45 PM",
-        "score": 6,
-        "replies": [],
-        "replyingTo": "amyrobson",
-        "user": {
-          "image": {
-            "png": "./images/avatars/image-juliusomo.png",
-            "webp": "./images/avatars/image-juliusomo.webp"
-          },
-          "username": "juliusomo"
-        }
-      }
-    ]
+    "replies": []
   },
   {
     "id": "comment-2",
@@ -43,7 +27,7 @@
     },
     "replies": [
       {
-        "id": "reply-2",
+        "id": "reply-1",
         "content": "If you're still new, I'd recommend focusing on the fundamentals of HTML, CSS, and JS before considering React. It's very tempting to jump ahead but lay a solid foundation first.",
         "createdAt": "7/13/2023, 1:20:12 PM",
         "score": 4,
@@ -58,7 +42,7 @@
         }
       },
       {
-        "id": "reply-3",
+        "id": "reply-2",
         "content": "I couldn't agree more with this. Everything moves so fast and it always seems like everyone knows the newest library/framework. But the fundamentals are what stay constant.",
         "createdAt": "7/13/2023, 1:21:45 PM",
         "score": 2,

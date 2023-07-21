@@ -97,9 +97,7 @@ const Comment = ({
         animate="visible"
         exit="exit"
         className="comment"
-        style={
-          !comment.replyingTo && { border: "1px solid var(--GrayishBlue)" }
-        }
+        style={!comment.replyingTo && { border: "1px solid var(--LightGray)" }}
       >
         {/* USER INFO AREA  */}
         <div className="user-info">

@@ -1,7 +1,7 @@
 const UsersList = ({ userData, currentUser, handleUserSelection }) => {
   return (
     <>
-      <h2>SELECT A USER</h2>
+      <h2 className="heading">SELECT A USER</h2>
       <ul className="users-list">
         {userData.map((user) => (
           <li
