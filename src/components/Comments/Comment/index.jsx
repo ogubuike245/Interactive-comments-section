@@ -1,30 +1,13 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
 // Local imports
 import Replies from "./Replies";
 import FormComponent from "./FormComponent.jsx";
+import { commentVariants, getTimeDifference, showToast } from "../../../utils";
+import ScoreComponent from "./ScoreComponent";
+import ActionsComponent from "./ActionsComponent";
 
-const commentVariants = {
-  hidden: {
-    opacity: 0,
-    x: -50,
-  },
-
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      type: "slide",
-      stiffness: 20,
-      damping: 5,
-      duration: 0.3,
-    },
-  },
-  exit: {
-    opacity: 0,
-    x: -50,
-  },
-};
 const Comment = ({
   //  DATA
   currentUser,
@@ -39,28 +22,9 @@ const Comment = ({
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [contentEditable, setContentEditable] = useState(false);
-  const [score, setScore] = useState(comment.score);
 
-  // Function to calculate time difference between now and the comment's createdAt
-  const getTimeDifference = () => {
-    const createdAt = new Date(comment.createdAt);
-    const now = new Date();
-    const differenceInSeconds = Math.floor((now - createdAt) / 1000);
-
-    if (differenceInSeconds < 60) {
-      return `${differenceInSeconds}s ago`;
-    } else if (differenceInSeconds < 3600) {
-      return `${Math.floor(differenceInSeconds / 60)}m ago`;
-    } else if (differenceInSeconds < 86400) {
-      return `${Math.floor(differenceInSeconds / 3600)}h ago`;
-    } else if (differenceInSeconds < 2592000) {
-      return `${Math.floor(differenceInSeconds / 86400)}d ago`;
-    } else if (differenceInSeconds < 31536000) {
-      return `${Math.floor(differenceInSeconds / 2592000)}mo ago`;
-    } else {
-      return `${Math.floor(differenceInSeconds / 31536000)}y ago`;
-    }
-  };
+  const { score, content, createdAt, replyingTo } = comment;
+  const [commentScore, setCommentScore] = useState(score);
 
   const toggleReplyForm = () => {
     setShowReplyForm((prev) => !prev);
@@ -69,41 +33,50 @@ const Comment = ({
 
   const toggleEdit = () => {
     setContentEditable((prev) => !prev);
-    setInputValue(comment.content);
+    setInputValue(content);
   };
 
   // UPvOTE
   const incrementScore = () => {
     handleVoting(comment.id, 1);
-    setScore((prev) => prev + 1);
+    setCommentScore((prev) => prev + 1);
   };
 
   // DOWNvOTE
   const decrementScore = () => {
     handleVoting(comment.id, -1);
-    setScore((prev) => prev - 1);
+    setCommentScore((prev) => prev - 1);
   };
 
   // REPLY COMMENT
   const handleCommentReply = (event) => {
     event.preventDefault();
-
-    handleAddReply(comment.id, inputValue);
-    toggleReplyForm();
+    if (inputValue.trim() === "") {
+      showToast("Comment cannot be empty. Please enter your comment.", "error");
+    } else {
+      handleAddReply(comment.id, inputValue);
+      showToast("Reply posted successfully!");
+      toggleReplyForm();
+    }
   };
+
   // EDIT COMMENT
   const handleCommentUpdate = (event) => {
     event.preventDefault();
-
-    handleEditComment(comment.id, inputValue);
-    setContentEditable(false);
+    if (inputValue.trim() === "") {
+      showToast("Comment cannot be empty. Please enter your comment.", "error");
+    } else {
+      handleEditComment(comment.id, inputValue);
+      showToast("Comment updated successfully!");
+      setContentEditable(false);
+    }
   };
 
   // DELETE COMMENT
   const handleCommentDelete = () => {
     handleDeleteComment(comment.id);
+    showToast("Your comment has been removed");
   };
-
   return (
     <>
       <motion.article
@@ -122,7 +95,7 @@ const Comment = ({
           {currentUser.username === comment.user.username && (
             <span className="user-check">you</span>
           )}
-          <span className="date-created">{getTimeDifference()}</span>
+          <span className="date-created">{getTimeDifference(createdAt)}</span>
         </div>
 
         {/* COMMENT CONTENT  */}
@@ -143,41 +116,27 @@ const Comment = ({
             </div>
           ) : (
             <p>
-              <strong>{comment.replyingTo && `@${comment.replyingTo} `}</strong>
-              {comment.content}
+              <strong>{replyingTo && `@${replyingTo} `}</strong>
+              {content}
             </p>
           )}
         </div>
 
         {/* COMMENT SCORE  */}
-        <div className="comment-score">
-          <i className="fa fa-minus" onClick={decrementScore}></i>
-          <strong>{score}</strong>
-          <i className="fa fa-plus" onClick={incrementScore}></i>
-        </div>
+        <ScoreComponent
+          commentScore={commentScore}
+          decrementScore={decrementScore}
+          incrementScore={incrementScore}
+        />
 
         {/* COMMENT ACTIONS  */}
-        <div className="actions">
-          {currentUser.username != comment.user.username && (
-            <div onClick={toggleReplyForm} className="reply-icon">
-              <i className="fa fa-reply"></i>
-              <span>Reply</span>
-            </div>
-          )}
-
-          {currentUser.username === comment.user.username && (
-            <>
-              <div onClick={toggleEdit} className="edit-icon">
-                <i className="fa fa-edit"></i>
-                <span>Edit</span>
-              </div>
-              <div onClick={handleCommentDelete} className="delete-icon">
-                <i className="fa fa-trash"></i>
-                <span>Delete</span>
-              </div>
-            </>
-          )}
-        </div>
+        <ActionsComponent
+          currentUser={currentUser}
+          toggleEdit={toggleEdit}
+          handleCommentDelete={handleCommentDelete}
+          toggleReplyForm={toggleReplyForm}
+          comment={comment}
+        />
       </motion.article>
 
       <AnimatePresence mode="wait">

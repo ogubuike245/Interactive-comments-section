@@ -1,6 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 
+// LOCAL IMPORTS
+import { commentVariants } from "../../../utils";
 const FormComponent = ({
   // DATA
   currentUser,
@@ -11,19 +13,6 @@ const FormComponent = ({
   onSubmit,
   setInputValue,
 }) => {
-  const commentVariants = {
-    hidden: { opacity: 0, x: -50 },
-
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        type: "slide",
-        duration: 0.1,
-      },
-    },
-    exit: { opacity: 0, x: 50 },
-  };
   return (
     <motion.form
       initial="hidden"

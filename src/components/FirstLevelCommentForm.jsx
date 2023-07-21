@@ -1,13 +1,18 @@
 import { useState } from "react";
+import { showToast } from "../utils";
 
 const FirstLevelCommentForm = ({ user, commentsArray, handleAddComment }) => {
   const [input, setInput] = useState("");
 
   const handleCreateComment = (e) => {
     e.preventDefault();
-    if (input.trim() === "") return;
-    handleAddComment(commentsArray, input);
-    setInput("");
+    if (input.trim() === "") {
+      return showToast("Comment cannot be empty. Please enter your comment.");
+    } else {
+      handleAddComment(commentsArray, input);
+      showToast("Reply posted successfully!");
+      setInput("");
+    }
   };
 
   return (

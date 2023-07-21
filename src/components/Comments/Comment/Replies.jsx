@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import Comment from "./Comment";
+import Comment from ".";
 
 const Replies = ({
   // DATA
@@ -12,12 +12,13 @@ const Replies = ({
   handleDeleteComment,
   handleVoting,
 }) => {
+  const { replies } = comment;
   return (
     <div className="replies">
       <AnimatePresence>
-        {comment.replies &&
-          comment.replies.length > 0 &&
-          comment.replies.map((reply) => (
+        {replies &&
+          replies.length > 0 &&
+          replies.map((reply) => (
             <Comment
               key={reply.id}
               // DATA

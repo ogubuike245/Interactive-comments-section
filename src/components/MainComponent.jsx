@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // LOCAL IMPORTS
 import Comments from "./Comments";
@@ -71,6 +73,7 @@ const MainComponent = () => {
   return (
     <section>
       <main>
+        <ToastContainer closeOnClick />
         <Comments
           // DATA
           user={currentUser}
